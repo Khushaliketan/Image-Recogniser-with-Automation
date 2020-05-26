@@ -142,7 +142,7 @@ while(i!=10):
         s.starttls()
 
         # Authentication 
-        s.login("thakkarkhushali368@gmail.com", "Spamyouspamme@28")
+        s.login("sender@gmail.com", "password")
 
 
         # message to be sent 
@@ -151,8 +151,8 @@ while(i!=10):
 
 
         # sending the mail 
-        s.sendmail("thakkarkhushali368@gmail.com", "khushali.thakkar9@gmail.com", message1)
-        s.sendmail("thakkarkhushali368@gmail.com", "khushali.thakkar9@gmail.com", message2)
+        s.sendmail("sender@gmail.com", "receiver@gmail.com", message1)
+        s.sendmail("sender@gmail.com", "receiver@gmail.com", message2)
 
         # terminating the session 
         s.quit()
