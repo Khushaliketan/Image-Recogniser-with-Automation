@@ -1,7 +1,7 @@
 from keras.layers import Dense, Convolution2D, MaxPooling2D, ZeroPadding2D, Dropout, InputLayer
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Flatten, Activation
-from keras.models import Sequential
+from keras.models import Sequential,load_model
 import random
 from keras.optimizers import RMSprop, Adam, Adamax, SGD, Nadam
 
@@ -12,8 +12,8 @@ img_cols=250
 #Importing our images for recognition
 from keras.preprocessing.image import ImageDataGenerator
 
-train_data="/root/model/Dataset/train/"
-test_data="/root/model/Dataset/val/"
+train_data="D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/Dataset/train/"
+test_data="D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/Dataset/val/"
 
 #Resizing each image to 250x250
 from PIL import Image
@@ -58,7 +58,7 @@ test_generator = test_datagen.flow_from_directory(
 
 model = Sequential()
 
-model.add(Convolution2D(filters=64, 
+model.add(Convolution2D(filters=128, 
                         kernel_size=(3,3), 
                         activation='relu',
                         input_shape=(img_rows, img_cols, 3)
@@ -67,7 +67,7 @@ model.add(MaxPooling2D(pool_size=(2,2)))
 
 model.add(BatchNormalization())
 
-model.add(Convolution2D(filters=64, 
+model.add(Convolution2D(filters=128, 
                         kernel_size=(3,3), 
                         activation='relu'
                        ))
@@ -88,31 +88,19 @@ def addCRP(model, no_CRP):
 model.add(Flatten())
 
 model.add(Dense(units=512, activation='relu'))
+model.add(Dense(units=512, activation='relu'))
 
 def addDense(model, no_Dense):
     for i in range(no_Dense):
         model.add(Dense(units=random.choice((32,64,128,256,512)), activation='relu'))
 
-#Model summary
-model.summary()
-
-#Output layer - manually added - we have 5 classes
-model.add(Dense(units=5, activation='softmax'))
-    
-    #Compiling the model
-model.compile(optimizer=random.choice((RMSprop(lr=0.001), Adam(lr=0.001), Adamax(lr=0.001), SGD(lr=0.001), Nadam(lr=0.001))),
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
-              )
-    
-
-i=0
-while(i!=10):
-    #Model summary
-    model.summary()
-
+i=1
+while(i!=5):
     #Output layer - manually added - we have 5 classes
     model.add(Dense(units=5, activation='softmax'))
+    
+    #Model summary
+    model.summary()
     
     #Compiling the model
     model.compile(optimizer=random.choice((RMSprop(lr=0.001), Adam(lr=0.001), Adamax(lr=0.001), SGD(lr=0.001), Nadam(lr=0.001))),
@@ -122,7 +110,7 @@ while(i!=10):
     out = model.fit(
         train_generator,
         steps_per_epoch=100,
-        epochs=random.randint(5,10),
+        epochs=random.randint(1,2),
         validation_data=test_generator)
     
     print(out.history, end='\n\n\n')
@@ -133,8 +121,10 @@ while(i!=10):
 
     mod =str(model.summary())
     accuracy = str(out.history['accuracy'][0])
+    
+    print(accuracy , file = open("D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/accuracy.txt","a"))
 
-    if out.history['accuracy'][0] >= .80:
+    if accuracy >= .80:
         import smtplib
         # creates SMTP session 
         s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -142,7 +132,7 @@ while(i!=10):
         s.starttls()
 
         # Authentication 
-        s.login("thakkarkhushali368@gmail.com", "Spamyouspamme@28")
+        s.login("sender@gmail.com", "password")
 
 
         # message to be sent 
@@ -151,17 +141,15 @@ while(i!=10):
 
 
         # sending the mail 
-        s.sendmail("thakkarkhushali368@gmail.com", "khushali.thakkar9@gmail.com", message1)
-        s.sendmail("thakkarkhushali368@gmail.com", "khushali.thakkar9@gmail.com", message2)
+        s.sendmail("sender@gmail.com", "receiver@gmail.com", message1)
+        s.sendmail("sender@gmail.com", "receiver@gmail.com", message2)
 
         # terminating the session 
         s.quit()
         break
     else:
-        loaded_model=model.load_weights('5CelebClassifier.h5')
-        loaded_model.layers.pop()
-        #addCRP(loaded_model, random.randint(1,3))
-        addDense(loaded_model, random.randint(1,5))
-        #loaded_model.add(Dense(units=5, activation='softmax'))
+        #model=load_model('5CelebClassifier.h5')
+        popped_output=model.pop()
+        #addCRP(model, random.randint(1,3))
+        addDense(model, random.randint(1,5))
         i=i+1
-
