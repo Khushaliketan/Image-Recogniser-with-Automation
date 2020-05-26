@@ -12,8 +12,8 @@ img_cols=250
 #Importing our images for recognition
 from keras.preprocessing.image import ImageDataGenerator
 
-train_data="D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/Dataset/train/"
-test_data="D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/Dataset/val/"
+train_data="/root/model/Dataset/train/"
+test_data="/root/model/Dataset/val/"
 
 #Resizing each image to 250x250
 from PIL import Image
@@ -122,7 +122,7 @@ while(i!=5):
     mod =str(model.summary())
     accuracy = str(out.history['accuracy'][0])
     
-    print(accuracy , file = open("D:/Users/OWNER/MLOps-ws/DL Task - CNN/Image-Recogniser-with-Automation/accuracy.txt","a"))
+    print(accuracy , file = open("/root/model/accuracy.txt","a"))
 
     if accuracy >= .80:
         import smtplib
