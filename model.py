@@ -12,8 +12,8 @@ img_cols=250
 #Importing our images for recognition
 from keras.preprocessing.image import ImageDataGenerator
 
-train_data="/root/model/train/"
-test_data="/root/model/val/"
+train_data="/root/model/Dataset/train/"
+test_data="/root/model/Dataset/val/"
 
 #Resizing each image to 250x250
 from PIL import Image
